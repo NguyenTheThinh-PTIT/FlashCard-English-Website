@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: flashEng
+  datasource:
+    url: jdbc:mysql://localhost:3306/flash_eng
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      enabled: true
+
+jwt:
+  secretKey: QhV1bbgiS2lzKg9ZCW2LyiOMr0popaPoaOdb4l+I68M=
+
+cloudinary:
+  cloudName: "dyzfar3j8"
+  apiKey: "548124688181912"
+  apiSecret: "W9iwNTkjjg_EQfAxJnx51zABj_Q"
