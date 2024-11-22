@@ -148,4 +148,10 @@ public class ClassSetRequestServiceImpl implements ClassSetRequestService {
         }
         throw new AccessDeniedException("You do not permission to retrieve information of this request.");
     }
+
+    @Override
+    public boolean deleteClassSetRequestByEntity(ClassSetRequestEntity classSetRequestEntity) {
+        classSetRequestRepository.delete(classSetRequestEntity);
+        return true;
+    }
 }

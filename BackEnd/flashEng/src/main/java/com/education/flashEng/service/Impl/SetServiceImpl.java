@@ -53,7 +53,7 @@ public class SetServiceImpl implements SetService {
         if(setEntity.getPrivacyStatus().equals(AccessModifierType.getKeyfromValue("Class"))){
             ClassEntity classEntity = classRepository.findById(createSetRequest.getClassId())
                     .orElseThrow(() -> new EntityNotFoundWithIdException("ClassEntity", createSetRequest.getClassId().toString()));
-            ClassMemberEntity classMemberEntity = classMemberRepository.findById(user.getId())
+            ClassMemberEntity classMemberEntity = classMemberRepository.findByClassEntityIdAndUserEntityId(classEntity.getId(), user.getId())
                     .orElseThrow(() -> new EntityNotFoundWithIdException("ClassMemberEntity", user.getId().toString()));
 
             if(classMemberEntity.getRoleClassEntity().getName().equals("ADMIN")){
@@ -81,9 +81,9 @@ public class SetServiceImpl implements SetService {
     }
 
     @Override
-    public List<SetResponse> getPublicAndPrivateSet() {
-        List<SetEntity> publicSetEntities = setRepository.findAllByPrivacyStatus(AccessModifierType.getKeyfromValue("Public"));
+    public List<SetResponse> getOwnPublicAndPrivateSet() {
         UserEntity user = userService.getUserFromSecurityContext();
+        List<SetEntity> publicSetEntities = setRepository.findAllByPrivacyStatusAndUserEntityId(AccessModifierType.getKeyfromValue("Public"), user.getId());
         List<SetEntity> privateSetEntities = setRepository.findAllByPrivacyStatusAndUserEntityId(
                 AccessModifierType.getKeyfromValue("Private"), user.getId());
         List<SetEntity> combinedSetEntities = new ArrayList<>();
@@ -228,6 +228,57 @@ public class SetServiceImpl implements SetService {
             s.setDescription(setEntity.getDescription());
             List<WordResponse> wordListResponses = wordService.getWordBySetId(setEntity.getId());
             s.setWordResponses(wordListResponses);
+            setResponses.add(s);
+        }
+        return setResponses;
+    }
+
+    @Override
+    public List<SetResponse> findSetByName(String name) {
+        List<SetEntity> setEntities = setRepository.findAllByNameContaining(name);
+        List<SetResponse> setResponses = new ArrayList<>();
+        UserEntity currentUser = userService.getUserFromSecurityContext();
+        setEntities.stream().filter(setEntity -> {
+                    String publicKey = AccessModifierType.getKeyfromValue("Public");
+                    String privateKey = AccessModifierType.getKeyfromValue("Private");
+                    String classKey = AccessModifierType.getKeyfromValue("Class");
+                    boolean isPublic = setEntity.getPrivacyStatus().equals(publicKey);
+                    boolean isPrivate = setEntity.getPrivacyStatus().equals(privateKey) && setEntity.getUserEntity().equals(currentUser);
+                    boolean isClass = setEntity.getPrivacyStatus().equals(classKey) && setEntity.getClassEntity().getClassMemberEntityList().stream()
+                            .anyMatch(classMemberEntity -> classMemberEntity.getUserEntity().getId() == currentUser.getId());
+
+                    return isPublic || isPrivate || isClass;
+                })
+                .forEach(setEntity -> {
+                    SetResponse s = new SetResponse();
+                    modelMapper.map(setEntity, s);
+                    s.setUserDetailResponse(setEntity.getUserEntity().getFullName(),
+                            setEntity.getUserEntity().getUsername(),
+                            setEntity.getUserEntity().getEmail(),
+                            setEntity.getUserEntity().getCountry());
+
+                    List<WordResponse> wordListResponses = wordService.getWordBySetId(setEntity.getId());
+                    s.setWordResponses(wordListResponses);
+                    s.setNumberOfWords((long) wordListResponses.size());
+                    setResponses.add(s);
+                });
+        return setResponses;
+    }
+
+    @Override
+    public List<SetResponse> getPublicSet() {
+        List<SetEntity> setEntities = setRepository.findAllByPrivacyStatus(AccessModifierType.getKeyfromValue("Public"));
+        List<SetResponse> setResponses = new ArrayList<>();
+        for(SetEntity setEntity : setEntities){
+            SetResponse s = new SetResponse();
+            modelMapper.map(setEntity, s);
+            s.setUserDetailResponse(setEntity.getUserEntity().getFullName(),
+                    setEntity.getUserEntity().getUsername(),
+                    setEntity.getUserEntity().getEmail(),
+                    setEntity.getUserEntity().getCountry());
+            List<WordResponse> wordListResponses = wordService.getWordBySetId(setEntity.getId());
+            s.setWordResponses(wordListResponses);
+            s.setNumberOfWords((long) wordListResponses.size());
             setResponses.add(s);
         }
         return setResponses;

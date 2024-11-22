@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -134,11 +135,11 @@ public class ClassJoinRequestServiceImpl implements ClassJoinRequestService {
     }
 
     @Override
-    public String checkExistance(Long classId) {
+    public Map<String,Long> checkExistance(Long classId) {
         UserEntity user = userService.getUserFromSecurityContext();
         Optional<ClassJoinRequestEntity> classJoinRequestEntity = classJoinRequestRepository.findByClassEntityIdAndUserEntityId(classId, user.getId());
         Long id = classJoinRequestEntity.map(ClassJoinRequestEntity::getId).orElse(null);
-        return id == null ? null : "ClassJoinRequestId: "+id.toString();
+        return id == null ? null : Map.of("classJoinRequestId", id);
 
     }
 
@@ -154,5 +155,11 @@ public class ClassJoinRequestServiceImpl implements ClassJoinRequestService {
             return true;
         }
         throw new AccessDeniedException("You are not authorized to revoke this request.");
+    }
+
+    @Override
+    public boolean deleteClassJoinRequestByEntity(ClassJoinRequestEntity classJoinRequestEntity) {
+        classJoinRequestRepository.delete(classJoinRequestEntity);
+        return true;
     }
 }

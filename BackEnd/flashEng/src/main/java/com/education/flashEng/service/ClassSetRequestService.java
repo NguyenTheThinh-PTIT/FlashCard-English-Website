@@ -11,4 +11,6 @@ public interface ClassSetRequestService {
     boolean acceptSetRequest(Long SetRequestId);
     boolean rejectSetRequest(Long SetRequestId);
     SetResponse getSetRequest(Long setRequestId);
+
+    boolean deleteClassSetRequestByEntity(ClassSetRequestEntity classSetRequestEntity);
 }

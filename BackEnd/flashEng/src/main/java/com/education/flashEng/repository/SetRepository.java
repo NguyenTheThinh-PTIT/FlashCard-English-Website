@@ -10,4 +10,6 @@ public interface SetRepository extends JpaRepository<SetEntity, Long> {
     List<SetEntity> findAllByPrivacyStatus(String privacyStatus);
     List<SetEntity> findAllByPrivacyStatusAndUserEntityId(String privacyStatus, Long userId);
     List<SetEntity> findAllByPrivacyStatusAndClassEntityId(String privacyStatus, Long classId);
+
+    List<SetEntity> findAllByNameContaining(String name);
 }

@@ -15,6 +15,7 @@ public class SecurityPermitAllHttp {
         PERMIT_ALL_ENDPOINTS.put("/user/register", Set.of("POST"));
         PERMIT_ALL_ENDPOINTS.put("/class/public/{classId}", Set.of("GET"));
         PERMIT_ALL_ENDPOINTS.put("/class", Set.of("GET"));
+        PERMIT_ALL_ENDPOINTS.put("/set/public", Set.of("GET"));
     }
 
     public static Map<String, Set<String>> getPermitAllEndpoints() {

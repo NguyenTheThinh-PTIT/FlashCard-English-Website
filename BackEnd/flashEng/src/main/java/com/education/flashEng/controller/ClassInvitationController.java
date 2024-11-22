@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/class/invitation")
 public class ClassInvitationController {
@@ -37,11 +39,14 @@ public class ClassInvitationController {
     @GetMapping("/existence")
     public ResponseEntity<?> checkExistance(@RequestParam @NotNull(message = "classId is required") Long classId,
                                            @RequestParam @NotBlank(message = "inviteeUsername cannot be blank") String inviteeUsername) {
-        String invitationId = classInvitationService.checkExistance(classId, inviteeUsername);
-        ApiResponse<?> response = new ApiResponse<>(true,"Invitation existed",invitationId);
-        if (invitationId == null)
+        Map<String,Long> invitationId = classInvitationService.checkExistance(classId, inviteeUsername);
+        ApiResponse<?> response = new ApiResponse<>(true,"Invitation existed",(Object) invitationId);
+        HttpStatus status = HttpStatus.OK;
+        if (invitationId == null) {
             response.setMessage("Invitation does not exist");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            status = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(response, status);
     }
 
     @PostMapping

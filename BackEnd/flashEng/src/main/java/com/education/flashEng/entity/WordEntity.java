@@ -22,25 +22,30 @@ public class WordEntity {
     @Column(name = "ipa", nullable = false)
     private String ipa;
 
-    @Column(name = "definition", nullable = false)
+    @Lob
+    @Column(name = "definition", nullable = false, columnDefinition = "LONGTEXT")
     private String definition;
 
-    @Column(name = "example", nullable = false)
+    @Lob
+    @Column(name = "example", nullable = false, columnDefinition = "LONGTEXT")
     private String example;
 
-    @Column(name = "image", nullable = false)
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGTEXT")
     private String image;
 
-    @Column(name = "image_public_id", nullable = false)
+    @Lob
+    @Column(name = "image_public_id", columnDefinition = "LONGTEXT")
     private String imagePublicId;
 
-    @Column(name = "audio", nullable = false)
+    @Lob
+    @Column(name = "audio", columnDefinition = "LONGTEXT")
     private String audio;
 
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private SetEntity setEntity;
 
-    @OneToMany(mappedBy = "wordEntity")
+    @OneToMany(mappedBy = "wordEntity", cascade = CascadeType.ALL)
     private List<StudySessionEntity> studySessionEntityList;
 }

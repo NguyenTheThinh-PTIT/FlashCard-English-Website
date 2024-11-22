@@ -4,6 +4,7 @@ package com.education.flashEng.service;
 import com.education.flashEng.entity.ClassJoinRequestEntity;
 import com.education.flashEng.payload.response.ClassJoinRequestResponse;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface ClassJoinRequestService {
@@ -17,7 +18,9 @@ public interface ClassJoinRequestService {
 
      ClassJoinRequestResponse getClassJoinRequest(Long requestId);
 
-     String checkExistance(Long classId);
+     Map<String,Long> checkExistance(Long classId);
 
      boolean revokeClassJoinRequest(Long requestId);
+
+     boolean deleteClassJoinRequestByEntity(ClassJoinRequestEntity classJoinRequestEntity);
 }

@@ -24,9 +24,7 @@ public class CreateWordRequest {
     @NotBlank(message = "Example is required")
     private String example;
 
-    @NotNull(message = "Image is required")
     private MultipartFile image;
 
-    @NotBlank(message = "Audio is required")
     private String audio;
 }

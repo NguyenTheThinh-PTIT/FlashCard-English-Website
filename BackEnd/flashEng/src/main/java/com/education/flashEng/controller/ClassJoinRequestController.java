@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/class/request/join")
 public class ClassJoinRequestController {
@@ -25,7 +27,7 @@ public class ClassJoinRequestController {
 
     @GetMapping("/existence")
     public ResponseEntity<?> checkExistance(@RequestParam @NotNull(message = "classId is required") Long classId){
-        String requestId = classJoinRequestService.checkExistance(classId);
+        Map<String,Long> requestId = classJoinRequestService.checkExistance(classId);
         ApiResponse<?> response = new ApiResponse<>(true, "Request existed", requestId);
         HttpStatus status = HttpStatus.OK;
         if (requestId == null){

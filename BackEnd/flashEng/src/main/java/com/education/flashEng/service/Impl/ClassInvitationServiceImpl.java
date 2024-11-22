@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -158,7 +159,7 @@ public class ClassInvitationServiceImpl implements ClassInvitationService {
     }
 
     @Override
-    public String checkExistance(Long classId, String inviteeUsername) {
+    public Map<String,Long> checkExistance(Long classId, String inviteeUsername) {
         UserEntity invitee = userService.getUserByUsername(inviteeUsername);
         UserEntity inviter = userService.getUserFromSecurityContext();
         ClassEntity classEntity = classService.getClassById(classId);
@@ -166,7 +167,7 @@ public class ClassInvitationServiceImpl implements ClassInvitationService {
             throw new AccessDeniedException("You are not authorized to invite to this class.");
         Optional<ClassInvitationEntity> classInvitationEntity = classInvitationRepository.findByClassEntityIdAndInviteeEntityIdAndInviterEntityId(classId, invitee.getId(), inviter.getId());
         if (classInvitationEntity.isPresent())
-            return "InvitationId: "+classInvitationEntity.get().getId();
+            return Map.of("classInvitationId", classInvitationEntity.get().getId());
         return null;
     }
 
@@ -179,6 +180,12 @@ public class ClassInvitationServiceImpl implements ClassInvitationService {
             throw new AccessDeniedException("You are not authorized to revoke this invitation.");
         classInvitationRepository.delete(classInvitationEntity);
         notificationService.deleteAllRelatedNotificationsByNotificationMetaData("classInvitationId", invitationId.toString());
+        return true;
+    }
+
+    @Override
+    public boolean deleteInvitationByEntity(ClassInvitationEntity classInvitationEntity) {
+        classInvitationRepository.delete(classInvitationEntity);
         return true;
     }
 

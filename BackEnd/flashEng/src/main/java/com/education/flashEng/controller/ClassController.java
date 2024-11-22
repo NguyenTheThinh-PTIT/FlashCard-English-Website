@@ -6,6 +6,7 @@ import com.education.flashEng.payload.response.ApiResponse;
 import com.education.flashEng.payload.response.ClassMemberListReponse;
 import com.education.flashEng.service.ClassService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ClassController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findClassByName(@RequestParam String name) {
+    public ResponseEntity<?> findClassByName(@RequestParam @NotNull(message = "Class name is required") String name) {
         ApiResponse<?> response = new ApiResponse<>(true, "Classes Fetched Successfully", classService.findClassByName(name));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -22,6 +22,12 @@ public class StudySessionEntity {
     @Column(name = "difficulty", nullable = false)
     private String difficulty;
 
+    @Column(name = "coefficient")
+    private Double coefficient = 1.0;
+
+    @Column(name = "reminder_time")
+    private Double reminderTime = 0.3;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

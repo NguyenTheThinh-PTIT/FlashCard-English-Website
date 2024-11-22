@@ -5,6 +5,7 @@ import com.education.flashEng.payload.request.UpdateSetRequest;
 import com.education.flashEng.payload.response.ApiResponse;
 import com.education.flashEng.service.SetService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,14 @@ public class SetController {
     SetService setService;
 
     @GetMapping
+    public ResponseEntity<?> getOwnSets() {
+        ApiResponse<?> response = new ApiResponse<>(true, "Get All Own Set Successfully", setService.getOwnPublicAndPrivateSet());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/public")
     public ResponseEntity<?> getPublicSets() {
-        ApiResponse<?> response = new ApiResponse<>(true, "Get All Public And Private Sets Successfully", setService.getPublicAndPrivateSet());
+        ApiResponse<?> response = new ApiResponse<>(true, "Get All Public Sets Successfully", setService.getPublicSet());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -37,6 +44,12 @@ public class SetController {
     @GetMapping("/class/{classId}")
     public ResponseEntity<?> getSetsOfClass(@PathVariable Long classId) {
         ApiResponse<?> response = new ApiResponse<>(true, "Get All Private Sets Of Current User Successfully", setService.getSetByClassID(classId));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchSets(@RequestParam @NotNull(message = "Set`s name cannot be Null") String name) {
+        ApiResponse<?> response = new ApiResponse<>(true, "Search Sets Successfully", setService.findSetByName(name));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

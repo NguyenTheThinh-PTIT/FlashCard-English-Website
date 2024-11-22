@@ -33,4 +33,8 @@ public interface NotificationService {
     boolean createStudySessionNotification(StudySessionEntity studySessionEntity, LocalDateTime localDateTime);
 
     List<NotificationResponse> getAllCurrentUserNotifications();
+
+    boolean deleteUserNotificationOfAClassWhenUserRoleChanged(ClassEntity classEntity, UserEntity userEntity);
+
+    boolean readNotification(Long notificationId);
 }

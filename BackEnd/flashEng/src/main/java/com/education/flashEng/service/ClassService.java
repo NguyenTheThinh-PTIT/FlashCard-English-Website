@@ -22,4 +22,5 @@ public interface ClassService {
     List<ClassInformationResponse> findClassByName(String name);
 
     boolean deleteClassByEntity(ClassEntity classEntity);
+
 }
